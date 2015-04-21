@@ -1,15 +1,155 @@
-OpenMesh, 3.0
-~~~~~~~~~~~~~~~
+largely based on OpenMesh, 3.0
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-0. Licence
-~~~~~~~~~~~~~~~
-   see LICENSE
+ ----------------------------------------------------------------------------------------------------
+ ---------- Tibor STANKO  :  ------------------------------------------------------------------------
+ ----------------------------------------------------------------------------------------------------
+ --------------------------  Refining Procedures on Mesh via Algebraic Fitting  ---------------------
+ ----------------------------------------------------------------------------------------------------
+ ---------------------------------------------------------- ( Master's Thesis ) ---------------------
+ ----------------------------------------------------------------------------------------------------
+ ------------------------------------------------------------  Bratislava, 2014  --------------------
+ ----------------------------------------------------------------------------------------------------
+ --------  access the thesis online (~6MB) on [ http://tiborstanko.sk/papers/ts-msc2014.pdf ]  ------
+ ----------------------------------------------------------------------------------------------------
+
+
+
+**********************************
+     0. BASIC INFO
+**********************************
+
+    This file contains the instructions on how to compile and run the software attached to the above thesis.
+
+    The software is based on OpenMesh 3.0, the open source C++ library.
+    --- project website                   : http://www.openmesh.org/
+    --- documentation for the 3.0 version : http://www.openmesh.org/media/Documentations/OpenMesh-3.0-Documentation
+
+    The main part of the attached software is the application Subdivider, which is a part of OpenMesh.
+    Subdivider was modified by implementing the Quadric Fitting Refinement algorithm.
+    This includes some modifications to the original GUI in order to provide full functionality of the QFR.
+    The details of this algorithm are to be found in the thesis itself.
+
+
+
+**********************************
+     1. SYSTEM REQUIREMENTS
+**********************************
+
+    Some additional libraries need to be installed prior to compilation of OpenMesh:
+    --- CMake     : http://www.cmake.org/
+    --- GLUT      : http://www.opengl.org/resources/libraries/glut/
+    --- Qt4       : http://qt-project.org/
+    --- Armadillo : http://arma.sourceforge.net/
+
+    Please, see the instructions on the websites of these projects
+    for the details of the installation on your operating system.
+
+    Subdivider was succesfully compiled and tested under Ubuntu Linux with GCC 4.8.2
+    (Ubuntu 13.10 Saucy Salamander) running on the PC with the Intel Core i7 3517 Ivy Bridge processor.
+
+
+
+**********************************
+     2. FOLDER STRUCTURE
+**********************************
+
+    Below is the basic folder structure of the project,
+    pointing out important parts of the implementation.
+
+    The implementation of the Quadric Fitting Refinement is included in the file QuadraticFittingT.hh.
  
-  
-1. Installing
-~~~~~~~~~~~~~~
-Unpack the tar-ball to a suitable place.
+		.
+		├── OpenMesh (root dir)
+		│   ├── cmake
+		│   ├── debian
+		│   ├── Doc
+		│   ├── LICENSE
+		│   ├── qmake
+		│   ├── src
+		│   │   ├── OpenMesh
+		│   │   │   ├── Apps
+		│   │   │   │   ├── Subdivider
+		│   │   │   │   │   ├── MeshViewerWidget.hh
+		│   │   │   │   │   ├── qtsubdivider.cc
+		│   │   │   │   │   ├── SubdividerGui
+		│   │   │   │   │   ├── SubdivideWidget.cc
+		│   │   │   │   │   └── SubdivideWidget.hh
+		│   │   │   │   └── VDProgMesh
+		│   │   │   ├── Core
+		│   │   │   ├── Examples
+		│   │   │   └── Tools
+		│   │   │       ├── Subdivider
+		│   │   │       │   └── Uniform
+		│   │   │       │       ├── QuadraticFittingT.hh
+		│   │   │       │       └── SubdividerT.hh
+		│   │   └── Unittests
+		│   └── templates
 
-A detailed build manual for Mac/Windows/Linux is in the Documentation 
-located at Doc/html/index.html 
 
+
+**********************************
+     3. COMPILING AND RUNNING
+**********************************
+
+    Note:
+    These instructions are written for UNIX systems.
+    In case your PC is running a different operating system (Windows, Mac OS),
+    see the following page in the official OpenMesh 3.0 documentation:
+        http://www.openmesh.org/media/Documentations/OpenMesh-3.0-Documentation/a00030.html
+
+    ---------------------------------------------------------------------------------
+        Compiling OpenMesh using CMake
+            (with excerpts from the official documentation, link above)
+    ----------------------------------------------------------------------------------
+    1) Import the root project directory ("OpenMesh") with its contents into your computer's hard drive.
+    2) Create a new folder (e.g. "build") in the root "OpenMesh" directory. 
+           .
+		   ├── OpenMesh (root dir)
+		   │   ├── build (create new dir)
+
+    3) Open the terminal and navigate into the newly created directory.
+    4) Execute the following commands:
+           cmake ..        ## Generates the appropriate Makefiles
+           make            ## Builds the project
+           make install    ## (Optional) Installs the libraries
+
+       The cmake command can be executed with additional flags:
+           -DCMAKE_BUILD_TYPE=(Debug|Release)  ## default: Debug
+           -DBUILD_APPS=OFF                    ## to disable build of applications (also Subdivider)
+           -DCMAKE_INSTALL_PREFIX=<path>       ## to specify the install path
+
+    5) Run Subdivider by executing
+           ./Build/bin/SubdividerGui
+
+
+
+**********************************
+     4. APPLICATION CONTROL
+**********************************
+
+    The main functionality is provided by four buttons:
+    --- Subdivide : subdivide the current mesh using the chosen subdivision scheme
+    --- Load Mesh : load the mesh from a file (obj,off,ply,...)
+    --- Save Mesh : save the mesh to a file
+    --- Reset     : reset the current mesh to its initial state
+
+    The choice of the subdivision scheme is done via radio buttons on the left.
+    Four schemes are enabled in the attached version:
+    --- QFR                  : nonlinear quadric fitting refinement from the thesis
+    --- Loop               │
+    --- Sqrt(3)            ├─: linear schemes
+    --- Modified Butterfly │
+    OpenMesh provides an implementation of some additional schemes for the refinement of triangular meshes.
+    These can be enabled in the file SubdivideWidget.cc (see folder structure above).
+
+    Additional controls are provided to control the limit surface produced by the QFR scheme:
+    --- vertex and normal weights : four text input boxes
+    --- vertex picking method     : two radio buttons (Projection or Footpoint)
+    --- normalization of normals  : a checkbox
+
+
+
+------------------
+END of ReadMe File
+------------------
